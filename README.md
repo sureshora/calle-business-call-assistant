@@ -14,26 +14,55 @@ Turn a plain-language business task into a safe, inspectable outbound phone-call
 
 ## Current milestone
 
-**CALL-E-004 — Hotel Scout Dry-Run Workflow**
+**CALL-E-005 — CALL-E Planning Integration Boundary**
 
-This milestone adds the first executable, no-call hotel comparison workflow. It validates a hotel search request, accepts up to three candidate hotels, generates a standardized questionnaire, renders an approval preview, and defines transparent ranking weights.
+This milestone adds a provider-neutral CALL-E planning adapter and a human approval gate. It prepares a structured `plan_call` payload containing the recipient, purpose, questionnaire, expected information, and safety constraints.
 
-### Run the dry-run demo
+The adapter does not place a live call. Actual CALL-E SDK/MCP execution will be added only after the exact installed CALL-E tool schema is verified.
+
+### Run the CALL-E plan preview demo
 
 From the repository root:
 
 ```bash
-python -m src.hotel_scout.demo
+python -m src.hotel_scout.calle_demo
 ```
 
-The demo uses placeholder hotel names and phone numbers. It does not place calls, make reservations, or collect payments.
+Expected behavior:
 
-### CALL-E-004 safety behavior
+- Prints a structured CALL-E planning payload.
+- Shows `approval_required: true`.
+- Shows `live_call_enabled: false`.
+- Does not place a phone call.
+
+### Approval gate
+
+Live execution must pass both checks:
+
+1. A human explicitly approves the call.
+2. The approval identifies the approving user.
+
+Example:
+
+```python
+from src.hotel_scout.approval import CallApproval, require_explicit_approval
+
+approval = CallApproval(
+    approved=True,
+    approved_by="user@example.com",
+    approval_note="Approved after reviewing the hotel call preview.",
+)
+
+require_explicit_approval(approval)
+```
+
+### CALL-E-005 safety behavior
 
 ```text
-Live calls allowed: False
-No call will be placed in this dry-run.
+Planning is allowed.
+Live execution requires explicit human approval.
 No booking or payment action is supported.
+No live call is placed by the demo.
 ```
 
 ## Planned contribution
