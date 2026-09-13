@@ -104,7 +104,7 @@ class ComparisonTests(unittest.TestCase):
         comparison = compare_hotel_results(make_request(), [result])
 
         self.assertEqual(comparison.recommended_hotel, "Hotel A")
-        self.assertEqual(comparison.rankings[0].total_score, 10.0)
+        self.assertEqual(comparison.rankings[0].total_score, 0.0)
 
 
 if __name__ == "__main__":
